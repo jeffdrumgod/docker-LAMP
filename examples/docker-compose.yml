@@ -1,0 +1,29 @@
+version: '3.1'
+services:
+  www:
+    image: jeffdrumgod/lamp:apache-php-5.6
+    expose:
+      - "80/tcp"
+    ports:
+      - "80:80"
+    environment:
+      ENVIRONMENT: development
+      APACHE_SERVERADMIN_EMAIL: 'me@mydomain.me'
+    volumes:
+      - ../www:/var/www/html
+      - ../logs/apache2:/var/log/apache2
+    links:
+      - db
+  db:
+    image: mysql:5.6
+    expose:
+      - "3306/tcp"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: admfy
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./datadir:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d

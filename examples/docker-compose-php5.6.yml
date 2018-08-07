@@ -1,0 +1,29 @@
+version: '3.1'
+services:
+  www:
+    image: jeffdrumgod/lamp:1.1.0-apache-php-5.6
+    expose:
+      - "80/tcp"
+    ports:
+      - "8090:80"
+    environment:
+      ENVIRONMENT: development
+    volumes:
+      - ../:/var/www/html
+      - ./logs/apache2:/var/log/apache2
+      - ./apache2/vhosts:/etc/apache2/from-host
+    links:
+      - db
+  db:
+    image: mysql:5.6
+    expose:
+      - "3306/tcp"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: admfy
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./datadir:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
