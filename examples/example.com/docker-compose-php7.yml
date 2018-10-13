@@ -1,17 +1,22 @@
 version: '3.1'
 services:
   www:
-    image: jeffdrumgod/lamp:2.0.0-apache-php-5.6
+    image: jeffdrumgod/lamp:2.0.0-apache-php-7.2
     expose:
       - "80/tcp"
+      - "443/tcp"
     ports:
-      - "8090:80"
+      - "80:80"
+      - "443:443"
     environment:
       ENVIRONMENT: development
     volumes:
-      - ../:/var/www/html
+      - ./:/var/www/html
       - ./logs/apache2:/var/log/apache2
       - ./apache2/vhosts:/etc/apache2/from-host
+      - ./apache2/certs:/etc/apache2/ssl/from-host
+    depends_on:
+      - db
     links:
       - db
   db:
@@ -21,9 +26,9 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: admfy
+      MYSQL_DATABASE: example
       MYSQL_USER: root
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - ./datadir:/var/lib/mysql
-      - ./init:/docker-entrypoint-initdb.d
+      - ./initdb:/docker-entrypoint-initdb.d
